@@ -138,6 +138,8 @@ def sleep():
 
 def grid(transcript):
     global root
+    global step_width
+    global step_height
     root = tk.Tk()
 
     root.overrideredirect(True)
@@ -190,7 +192,23 @@ def grid(transcript):
     root.update()
 
 def grid_move(transcript):
-    root.destroy()
+    numbers = transcript.split()
+    if numbers[1].isnumeric():
+        hold = int(numbers[1])
+        square = int(numbers[1])
+        column = square % 10
+        square = (square-column) / 10
+        row = square % 10
+        if column == 0:
+            column = 10
+            row = row - 1
+        if row == 0 and hold > 10:
+            row = 10
+
+        mouse.move((column * step_width) - step_width/2, (row * step_height) + step_height/2, absolute=True, duration=0)
+        root.destroy()
+    else:
+        root.destroy()
 
 def volume_output(num):
     previous = mouse.get_position()
@@ -213,15 +231,25 @@ def keyboard_up():
     mouse.wheel(delta=7)
 def keyboard_down():
     mouse.wheel(delta=-7)
-def mouse_move(direction, num):
+
+
+def mouse_move(transcript):
+    words = transcript.split()
+    direction = words[0]
+    num = 1
+    if len(words) == 1:
+        num = 1
+    elif words[1].isnumeric():
+        num = int(words[1])
+
     if direction == "r":
-        mouse.move(25*num, 0, absolute=False, duration=0)
+        mouse.move(50*num, 0, absolute=False, duration=0)
     elif direction == "l":
-        mouse.move(-25*num, 0, absolute=False, duration=0)
+        mouse.move(-50*num, 0, absolute=False, duration=0)
     elif direction == "u":
-        mouse.move(0, -25*num, absolute=False, duration=0)
+        mouse.move(0, -50*num, absolute=False, duration=0)
     elif direction == "d":
-        mouse.move(0, 25*num, absolute=False, duration=0)
+        mouse.move(0, 50*num, absolute=False, duration=0)
 
 def reopen(transcript):
     keyboard.press_and_release("ctrl+shift+t")
@@ -328,7 +356,7 @@ def zoom(transcript):
         keyboard.press("ctrl")
         sleep()
         mouse.wheel(delta=5)
-        slee()
+        sleep()
         keyboard.release("ctrl")
 
     elif in_or_out[1] == "out":
@@ -364,7 +392,11 @@ parse_dict = {
     "paste" : paste_message ,
     "zoom" : zoom,
     "grid" : grid,
-    "square" : grid_move
+    "square" : grid_move,
+    "d": mouse_move,
+    "l": mouse_move,
+    "u": mouse_move,
+    "r": mouse_move
 
 }
 
@@ -372,13 +404,10 @@ def processInput(transcript):
 
     words = transcript.lower().split()
     parse_dict.get(words[0], next_cycle)(transcript)
+    print(transcript)
 
     """
- 
-    elif "start" in parse:
-        mouse.move(5, 890, absolute=True, duration=0)
-        time.sleep(0.05)
-        mouse.click(button='left')
+
 
     elif "setvolumeto" in parse:
         word = parse[parse.find("setvolumeto")+len("setvolumeto"):]
@@ -389,52 +418,8 @@ def processInput(transcript):
         if number.isnumeric():
             number = int(number)
             volume_output(number)
-
-    elif "r" in parse:
-        word = parse[parse.find("r")+len("r"):]
-        number = ""
-        for i in range(len(word)):
-            if i == 0 and word[i].isnumeric()==False:
-                break
-            if word[i].isnumeric():
-                number = number + word[i]
-        if number.isnumeric():
-            number = int(number)
-            move_mouse("r",number)
-    elif "l" in parse:
-        word = parse[parse.find("l")+len("l"):]
-        number = ""
-        for i in range(len(word)):
-            if i == 0 and word[i].isnumeric()==False:
-                break
-            if word[i].isnumeric():
-                number = number + word[i]
-        if number.isnumeric():
-            number = int(number)
-            move_mouse("l",number)
-    elif "u" in parse:
-        word = parse[parse.find("u")+len("u"):]
-        number = ""
-        for i in range(len(word)):
-            if i == 0 and word[i].isnumeric()==False:
-                break
-            if word[i].isnumeric():
-                number = number + word[i]
-        if number.isnumeric():
-            number = int(number)
-            move_mouse("u",number)
-    elif "d" in parse:
-        word = parse[parse.find("d")+len("d"):]
-        number = ""
-        for i in range(len(word)):
-            if i == 0 and word[i].isnumeric()==False:
-                break
-            if word[i].isnumeric():
-                number = number + word[i]
-        if number.isnumeric():
-            number = int(number)
-            move_mouse("d",number)
     """
+
     
 
 
@@ -509,7 +494,7 @@ def main():
         sample_rate_hertz=SAMPLE_RATE,
         language_code='en-US',
         speech_contexts=[speech.types.SpeechContext(
-        phrases=["type","right click","click", "set volume to","minimize window", "close tab", "copy", "clear","paste","go to tab", "scroll up", "scroll down", "fullscreen", "back","switch","forward","enter","zoomin","zoomout"])],
+        phrases=["d","l","u","r","type","right click","click", "set volume to","minimize window", "close tab", "copy", "clear","paste","go to tab", "scroll up", "scroll down", "fullscreen", "back","switch","forward","enter","zoomin","zoomout"])],
         max_alternatives=1)
     streaming_config = speech.types.StreamingRecognitionConfig(
         config=config,
