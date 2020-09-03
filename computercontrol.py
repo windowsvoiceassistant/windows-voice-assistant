@@ -135,11 +135,13 @@ class ResumableMicrophoneStream:
 def sleep():
     time.sleep(0.05)
 
-
+global tk_on
+tk_on = False
 def grid(transcript):
     global root
     global step_width
     global step_height
+    tk_on = True
     root = tk.Tk()
 
     root.overrideredirect(True)
@@ -193,23 +195,31 @@ def grid(transcript):
 
 def grid_move(transcript):
     numbers = transcript.split()
-    if numbers[1].isnumeric():
-        hold = int(numbers[1])
-        square = int(numbers[1])
-        column = square % 10
-        square = (square-column) / 10
-        row = square % 10
-        if column == 0:
-            column = 10
-            row = row - 1
-        if row == 0 and hold > 10:
-            row = 10
 
-        mouse.move((column * step_width) - step_width/2, (row * step_height) + step_height/2, absolute=True, duration=0)
+    if tk_on == False:
+        print("No grid yet")
+    elif len(numbers) == 1:
         root.destroy()
     else:
-        root.destroy()
+        if numbers[1] == "V":
+            numbers[1] = "5"
+        if numbers[1].isnumeric():
+            hold = int(numbers[1])
+            square = int(numbers[1])
+            column = square % 10
+            square = (square-column) / 10
+            row = square % 10
+            if column == 0:
+                column = 10
+                row = row - 1
+            if row == 0 and hold > 10:
+                row = 10
 
+            mouse.move((column * step_width) - step_width/2, (row * step_height) + step_height/2, absolute=True, duration=0)
+            root.destroy()
+        else:
+            root.destroy()
+    
 def volume_output(num):
     previous = mouse.get_position()
     mouse.move(1360, 900, absolute=True, duration=0)
@@ -294,6 +304,8 @@ def close_window(transcript):
             keyboard.press_and_release('ctrl+w')
         except:
             print("Not Recognized")
+    elif "close grid" in transcript:
+        root.destroy()
 
     else:
         keyboard.press_and_release("alt+F4")
@@ -392,7 +404,7 @@ parse_dict = {
     "paste" : paste_message ,
     "zoom" : zoom,
     "grid" : grid,
-    "square" : grid_move,
+    "section" : grid_move,
     "d": mouse_move,
     "l": mouse_move,
     "u": mouse_move,
@@ -494,7 +506,7 @@ def main():
         sample_rate_hertz=SAMPLE_RATE,
         language_code='en-US',
         speech_contexts=[speech.types.SpeechContext(
-        phrases=["d","l","u","r","type","right click","click", "set volume to","minimize window", "close tab", "copy", "clear","paste","go to tab", "scroll up", "scroll down", "fullscreen", "back","switch","forward","enter","zoomin","zoomout"])],
+        phrases=["grid","d","l","u","r","type","close grid", "set volume to","minimize window", "close tab", "copy", "clear","paste","go to tab", "scroll up", "scroll down", "fullscreen", "back","switch","forward","enter","zoomin","zoomout"])],
         max_alternatives=1)
     streaming_config = speech.types.StreamingRecognitionConfig(
         config=config,
@@ -503,9 +515,6 @@ def main():
     mic_manager = ResumableMicrophoneStream(SAMPLE_RATE, CHUNK_SIZE)
     print(mic_manager.chunk_size)
     sys.stdout.write('\nListening, say "Quit" or "Exit" to stop.\n\n')
-    sys.stdout.write('End (ms)       Transcript Results/Status\n')
-    sys.stdout.write('=====================================================\n')
-
     with mic_manager as stream:
 
         while not stream.closed:
