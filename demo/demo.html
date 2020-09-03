@@ -12,14 +12,15 @@
     <link rel="shortcut icon" type="image/x-icon" href="icon.ico" />
     <link rel="stylesheet" href="demo.css">
 
-    <title>Voice Recognition</title>
+    <title>Windows Voice Assistant</title>
 </head>
 <body class="container">
     <div class="title jumbotron">
-        <h1>Operating Computer with Google Speech API</h1>
+        <h1>Windows Voice Assistant</h1>
         <h3>Simon Yan & Pratham Thukral</h3>
-        <a href="https://github.com/spaghettibois/speech-computer-control/"><button class="btn btn-success">Github Repo.</button></a>
-        <a href="https://youtu.be/jGUPjDWyO8Q"><button class="btn btn-danger">Video Demo</button></a>
+        <hr>
+        <a href="https://github.com/windowsvoiceassistant/windows-voice-assistant" target="_blank"><button class="btn btn-success">Github Repo.</button></a>
+        <a href="https://youtu.be/jGUPjDWyO8Q" target="_blank"><button class="btn btn-danger">Video Demo</button></a>
     </div>
         <div class="card">
             <div class="card-body">
@@ -39,6 +40,49 @@
                         <th>Description</th>
                     </thead>
                     <tbody>
+                        <tr>
+                            <td>grid</td>
+                            <td>
+                                opens a numbered grid overlay on screen
+                                <br>
+                                <img id="myImg" src="./images/nogrid.png" width='300px'>
+
+                                <!-- The Modal -->
+                                <div id="myModal" class="modal">
+
+                                <!-- The Close Button -->
+                                <span class="close">&times;</span>
+
+                                <!-- Modal Content (The Image) -->
+                                <img class="modal-content" id="img01">
+
+                                <!-- Modal Caption (Image Text) -->
+                                <div id="caption"></div>
+                                </div>
+                                <img id="myImg" src="./images/grid.png" width='300px'>
+
+                                <!-- The Modal -->
+                                <div id="myModal" class="modal">
+
+                                <!-- The Close Button -->
+                                <span class="close">&times;</span>
+
+                                <!-- Modal Content (The Image) -->
+                                <img class="modal-content" id="img01">
+
+                                <!-- Modal Caption (Image Text) -->
+                                <div id="caption"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>square <span class="keyword">number</span></td>
+                            <td>Move the cursor to the grid location</td>
+                        </tr>
+                        <tr>
+                            <td>close grid</td>
+                            <td>Closes the grid overlay</td>
+                        </tr>
                         <tr>
                             <td>enter</td>
                             <td>Triggers the enter key push</td>
@@ -116,20 +160,20 @@
                             <td>Sets system volume to a percentage</td>
                         </tr>
                         <tr>
-                            <td>L <span class="keyword">number</span></td>
-                            <td>Moves the mouse cursor left in 25 pixel increments</td>
+                            <td>L</td>
+                            <td>Moves the mouse cursor left in 50 pixel increments</td>
                         </tr>
                         <tr>
-                            <td>R <span class="keyword">number</span></td>
-                            <td>Moves the mouse cursor right in 25 pixel increments</td>
+                            <td>R</td>
+                            <td>Moves the mouse cursor right in 50 pixel increments</td>
                         </tr>
                         <tr>
-                            <td>U <span class="keyword">number</span></td>
-                            <td>Moves the mouse cursor up in 25 pixel increments</td>
+                            <td>U</td>
+                            <td>Moves the mouse cursor up in 50 pixel increments</td>
                         </tr>
                         <tr>
-                            <td>D <span class="keyword">number</span></td>
-                            <td>Moves the mouse cursor down in 25 pixel increments</td>
+                            <td>D</td>
+                            <td>Moves the mouse cursor down in 50 pixel increments</td>
                         </tr>
                         <tr>
                             <td>click</td>
@@ -173,4 +217,27 @@
         </div>
     </div>
 </body>
+
+<script>
+    // Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the image and insert it inside the modal - use its "alt" text as a caption
+var img = document.getElementById("myImg");
+var modalImg = document.getElementById("img01");
+var captionText = document.getElementById("caption");
+img.onclick = function(){
+  modal.style.display = "block";
+  modalImg.src = this.src;
+  captionText.innerHTML = this.alt;
+}
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+</script>
 </html>
