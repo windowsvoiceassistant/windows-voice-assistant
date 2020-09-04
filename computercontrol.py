@@ -220,27 +220,28 @@ def grid_move(transcript):
         else:
             root.destroy()
     
-def volume_output(num):
-    previous = mouse.get_position()
-    mouse.move(1360, 900, absolute=True, duration=0)
-    time.sleep(0.05)
-    mouse.click(button='left')
-    scale = 1242 + ((1472 - 1242)/100)*num
-    time.sleep(0.5)
-    mouse.move(scale, 797, absolute=True, duration=0)
-    time.sleep(0.05)
-    mouse.click(button='left')
-    time.sleep(0.05)
-    mouse.move(1360, 900, absolute=True, duration=0)
-    time.sleep(0.05)
-    mouse.click(button='left')
-    time.sleep(0.05)
-    mouse.move(previous[0], previous[1], absolute=True, duration=0)
+def volume_output(transcript):
+    words = transcript.lower().split()
+    num = 1
+    if words[1] == "up":
+        try:
+            num = num * int(words[2])
+        except:
+            num = 1
 
-def keyboard_up():
-    mouse.wheel(delta=7)
-def keyboard_down():
-    mouse.wheel(delta=-7)
+        for i in range(num):
+            keyboard.send("volume up")
+    elif words[1] == "down":
+        try:
+            num = num * int(words[2])
+        except:
+            num = 1
+
+        for i in range(num):
+            keyboard.send("volume down")
+
+    elif words[1] == "mute":
+        keyboard.send("volume mute")
 
 
 def mouse_move(transcript):
@@ -408,7 +409,8 @@ parse_dict = {
     "d": mouse_move,
     "l": mouse_move,
     "u": mouse_move,
-    "r": mouse_move
+    "r": mouse_move,
+    "volume": volume_output
 
 }
 
@@ -417,22 +419,6 @@ def processInput(transcript):
     words = transcript.lower().split()
     parse_dict.get(words[0], next_cycle)(transcript)
     print(transcript)
-
-    """
-
-
-    elif "setvolumeto" in parse:
-        word = parse[parse.find("setvolumeto")+len("setvolumeto"):]
-        number = ""
-        for i in range(len(word)):
-            if word[i].isnumeric():
-                number = number + word[i]
-        if number.isnumeric():
-            number = int(number)
-            volume_output(number)
-    """
-
-    
 
 
 def listen_print_loop(responses, stream):
